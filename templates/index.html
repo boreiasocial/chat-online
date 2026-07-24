@@ -1,64 +1,142 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Chat Online</title>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
     <link rel="stylesheet" href="/static/style.css">
+
 </head>
 <body>
 
 <div class="container">
 
-    <h1>💬 Chat Online</h1>
+    <div class="sidebar">
 
-    <div id="chat"></div>
+        <h2>🟢 Online</h2>
 
-    <div class="enviar">
-        <input id="mensagem" placeholder="Digite uma mensagem...">
-        <button onclick="enviar()">Enviar</button>
+        <ul id="usuarios"></ul>
+
+    </div>
+
+    <div class="chat-area">
+
+        <h1>💬 Chat Online</h1>
+
+        <div id="chat"></div>
+
+        <div class="enviar">
+
+            <input
+                id="mensagem"
+                type="text"
+                placeholder="Digite uma mensagem..."
+                maxlength="300"
+            >
+
+            <button onclick="enviar()">
+                Enviar
+            </button>
+
+        </div>
+
     </div>
 
 </div>
 
 <script>
+
 const socket = io();
 
-const nome = prompt("Digite seu nome:");
+let nome = "";
+
+while(nome.trim()==""){
+    nome = prompt("Digite seu nome:");
+}
 
 socket.emit("entrar", nome);
 
-socket.on("mensagem", (dados)=>{
+const chat = document.getElementById("chat");
+const usuarios = document.getElementById("usuarios");
+const caixa = document.getElementById("mensagem");
 
-    let chat = document.getElementById("chat");
+socket.on("usuarios",(lista)=>{
 
-    chat.innerHTML += `
-        <div>
-            <b>${dados.autor}:</b> ${dados.texto}
-        </div>
-    `;
+    usuarios.innerHTML="";
 
-    chat.scrollTop = chat.scrollHeight;
+    lista.forEach(usuario=>{
+
+        const li=document.createElement("li");
+
+        li.textContent="🟢 "+usuario;
+
+        usuarios.appendChild(li);
+
+    });
+
+});
+
+socket.on("mensagem",(dados)=>{
+
+    const hora=new Date().toLocaleTimeString([],{
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+
+    const div=document.createElement("div");
+
+    div.className="mensagem";
+
+    const autor=document.createElement("b");
+    autor.textContent=dados.autor+": ";
+
+    const texto=document.createElement("span");
+    texto.textContent=dados.texto;
+
+    const horario=document.createElement("small");
+    horario.textContent=" "+hora;
+
+    div.appendChild(autor);
+    div.appendChild(texto);
+    div.appendChild(document.createElement("br"));
+    div.appendChild(horario);
+
+    chat.appendChild(div);
+
+    chat.scrollTop=chat.scrollHeight;
 
 });
 
 function enviar(){
 
-    let caixa = document.getElementById("mensagem");
-
-    if(caixa.value=="") return;
+    if(caixa.value.trim()=="") return;
 
     socket.emit("mensagem",{
+
         autor:nome,
-        texto:caixa.value
+        texto:caixa.value.trim()
+
     });
 
     caixa.value="";
 
 }
+
+caixa.addEventListener("keydown",(e)=>{
+
+    if(e.key==="Enter"){
+
+        enviar();
+
+    }
+
+});
+
 </script>
 
 </body>
