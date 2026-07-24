@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Online</title>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>💬 Chat Online</h1>
+
+    <div id="chat"></div>
+
+    <div class="enviar">
+        <input id="mensagem" placeholder="Digite uma mensagem...">
+        <button onclick="enviar()">Enviar</button>
+    </div>
+
+</div>
+
+<script>
+const socket = io();
+
+const nome = prompt("Digite seu nome:");
+
+socket.emit("entrar", nome);
+
+socket.on("mensagem", (dados)=>{
+
+    let chat = document.getElementById("chat");
+
+    chat.innerHTML += `
+        <div>
+            <b>${dados.autor}:</b> ${dados.texto}
+        </div>
+    `;
+
+    chat.scrollTop = chat.scrollHeight;
+
+});
+
+function enviar(){
+
+    let caixa = document.getElementById("mensagem");
+
+    if(caixa.value=="") return;
+
+    socket.emit("mensagem",{
+        autor:nome,
+        texto:caixa.value
+    });
+
+    caixa.value="";
+
+}
+</script>
+
+</body>
+</html>
