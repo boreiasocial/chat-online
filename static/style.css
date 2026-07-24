@@ -1,59 +1,175 @@
-body{
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
     background:#1e1f22;
-    font-family:Arial,Helvetica,sans-serif;
     color:white;
+    font-family:Arial,Helvetica,sans-serif;
+    height:100vh;
 }
 
 .container{
-    width:90%;
-    max-width:800px;
-    margin:40px auto;
+    display:flex;
+    height:100vh;
 }
 
-h1{
+/* ---------- Sidebar ---------- */
+
+.sidebar{
+    width:230px;
+    background:#2b2d31;
+    padding:20px;
+    border-right:1px solid #3f4147;
+}
+
+.sidebar h2{
+    margin-bottom:15px;
     text-align:center;
 }
 
-#chat{
-    height:450px;
-    background:#2b2d31;
-    border-radius:10px;
-    padding:15px;
-    overflow-y:auto;
-    margin-bottom:15px;
+#usuarios{
+    list-style:none;
 }
 
-#chat div{
-    margin:8px 0;
-    padding:8px;
+#usuarios li{
     background:#3a3d44;
+    margin-bottom:8px;
+    padding:10px;
     border-radius:8px;
+    transition:.2s;
 }
+
+#usuarios li:hover{
+    background:#4b4f57;
+}
+
+/* ---------- Área do chat ---------- */
+
+.chat-area{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:20px;
+    text-align:center;
+}
+
+/* ---------- Chat ---------- */
+
+#chat{
+    flex:1;
+    overflow-y:auto;
+    background:#313338;
+    border-radius:12px;
+    padding:20px;
+}
+
+#chat::-webkit-scrollbar{
+    width:8px;
+}
+
+#chat::-webkit-scrollbar-thumb{
+    background:#555;
+    border-radius:10px;
+}
+
+/* ---------- Mensagens ---------- */
+
+.mensagem{
+    background:#404249;
+    margin-bottom:12px;
+    padding:12px;
+    border-radius:10px;
+    animation:aparecer .2s ease;
+    word-break:break-word;
+}
+
+.mensagem b{
+    color:#6ea8fe;
+}
+
+.mensagem small{
+    color:#a5a5a5;
+    font-size:11px;
+}
+
+/* ---------- Enviar ---------- */
 
 .enviar{
     display:flex;
+    margin-top:15px;
     gap:10px;
 }
 
 input{
     flex:1;
-    padding:12px;
+    padding:14px;
     border:none;
-    border-radius:8px;
-    font-size:16px;
-}
-
-button{
-    padding:12px 20px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background:#5865F2;
+    border-radius:10px;
+    outline:none;
+    background:#404249;
     color:white;
     font-size:16px;
 }
 
+input::placeholder{
+    color:#b7b7b7;
+}
+
+button{
+    background:#5865F2;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:14px 25px;
+    cursor:pointer;
+    font-size:15px;
+    transition:.2s;
+}
+
 button:hover{
-    background:#4752C4;
+    background:#4752c4;
+    transform:scale(1.03);
+}
+
+button:active{
+    transform:scale(.97);
+}
+
+/* ---------- Animação ---------- */
+
+@keyframes aparecer{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* ---------- Celular ---------- */
+
+@media(max-width:700px){
+
+    .container{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid #444;
+    }
+
 }
