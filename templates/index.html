@@ -1,27 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Chat Online</title>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
     <link rel="stylesheet" href="/static/style.css">
-
 </head>
 <body>
 
 <div class="container">
 
     <div class="sidebar">
-
         <h2>🟢 Online</h2>
-
         <ul id="usuarios"></ul>
-
     </div>
 
     <div class="chat-area">
@@ -31,7 +24,6 @@
         <div id="chat"></div>
 
         <div class="enviar">
-
             <input
                 id="mensagem"
                 type="text"
@@ -42,7 +34,6 @@
             <button onclick="enviar()">
                 Enviar
             </button>
-
         </div>
 
     </div>
@@ -55,7 +46,7 @@ const socket = io();
 
 let nome = "";
 
-while(nome.trim()==""){
+while(nome.trim() === ""){
     nome = prompt("Digite seu nome:");
 }
 
@@ -65,77 +56,56 @@ const chat = document.getElementById("chat");
 const usuarios = document.getElementById("usuarios");
 const caixa = document.getElementById("mensagem");
 
+// Lista de usuários
 socket.on("usuarios",(lista)=>{
 
-    usuarios.innerHTML="";
+    usuarios.innerHTML = "";
 
     lista.forEach(usuario=>{
 
-        const li=document.createElement("li");
-
-        li.textContent="🟢 "+usuario;
+        const li = document.createElement("li");
+        li.textContent = "🟢 " + usuario;
 
         usuarios.appendChild(li);
 
     });
 
 });
-    socket.on("historico",(mensagens)=>{
 
-    chat.innerHTML="";
+// Histórico
+socket.on("historico",(mensagens)=>{
 
-    mensagens.forEach((dados)=>{
+    chat.innerHTML = "";
 
-        const div=document.createElement("div");
+    mensagens.forEach(adicionarMensagem);
 
-        div.className="mensagem";
-
-        div.innerHTML=
-        `<b>${dados.autor}</b><br>
-        ${dados.texto}<br>
-        <small>${dados.hora}</small>`;
-
-        chat.appendChild(div);
-
-    });
-
-    chat.scrollTop=chat.scrollHeight;
+    chat.scrollTop = chat.scrollHeight;
 
 });
 
-
-function enviar(){
-
-    if(caixa.value.trim()=="") return;
-
-    socket.emit("mensagem",{
-
-        autor:nome,
-        texto:caixa.value.trim(),
-        hora:new Date().toLocaleTimeString([],{
-            hour:"2-digit",
-            minute:"2-digit"
-        })
-
-    });
-
-    caixa.value="";
-
-}
+// Nova mensagem
 socket.on("mensagem",(dados)=>{
 
-    const div=document.createElement("div");
+    adicionarMensagem(dados);
 
-    div.className="mensagem";
+    chat.scrollTop = chat.scrollHeight;
 
-    const autor=document.createElement("b");
-    autor.textContent=dados.autor+": ";
+});
 
-    const texto=document.createElement("span");
-    texto.textContent=dados.texto;
+// Adiciona mensagem na tela
+function adicionarMensagem(dados){
 
-    const horario=document.createElement("small");
-    horario.textContent=" "+(dados.hora || "");
+    const div = document.createElement("div");
+    div.className = "mensagem";
+
+    const autor = document.createElement("b");
+    autor.textContent = dados.autor + ": ";
+
+    const texto = document.createElement("span");
+    texto.textContent = dados.texto;
+
+    const horario = document.createElement("small");
+    horario.textContent = " " + (dados.hora || "");
 
     div.appendChild(autor);
     div.appendChild(texto);
@@ -144,15 +114,35 @@ socket.on("mensagem",(dados)=>{
 
     chat.appendChild(div);
 
-    chat.scrollTop=chat.scrollHeight;
+}
 
-    caixa.addEventListener("keydown",(e)=>{
+// Enviar mensagem
+function enviar(){
 
-    if(e.key==="Enter"){
+    if(caixa.value.trim() === "") return;
+
+    socket.emit("mensagem",{
+
+        autor: nome,
+        texto: caixa.value.trim(),
+        hora: new Date().toLocaleTimeString([],{
+            hour:"2-digit",
+            minute:"2-digit"
+        })
+
+    });
+
+    caixa.value = "";
+
+}
+
+// Enter envia mensagem
+caixa.addEventListener("keydown",(e)=>{
+
+    if(e.key === "Enter"){
         enviar();
     }
 
-});
 });
 
 </script>
