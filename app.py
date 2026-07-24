@@ -5,7 +5,11 @@ import sqlite3
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "chat-online"
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode="threading"
+)
 
 usuarios = {}
 
