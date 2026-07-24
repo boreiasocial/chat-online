@@ -80,7 +80,64 @@ socket.on("usuarios",(lista)=>{
     });
 
 });
+    socket.on("historico",(mensagens)=>{
 
+    chat.innerHTML="";
+
+    mensagens.forEach((dados)=>{
+
+        const div=document.createElement("div");
+
+        div.className="mensagem";
+
+        div.innerHTML=
+        `<b>${dados.autor}</b><br>
+        ${dados.texto}<br>
+        <small>${dados.hora}</small>`;
+
+        chat.appendChild(div);
+
+    });
+
+    chat.scrollTop=chat.scrollHeight;
+
+});
+
+
+socket.on("mensagem",(dados)=>{
+
+    const div=document.createElement("div");
+
+    div.className="mensagem";
+
+    div.innerHTML=
+    `<b>${dados.autor}</b><br>
+    ${dados.texto}<br>
+    <small>${dados.hora}</small>`;
+
+    chat.appendChild(div);
+
+    chat.scrollTop=chat.scrollHeight;
+
+});
+function enviar(){
+
+    if(caixa.value.trim()=="") return;
+
+    socket.emit("mensagem",{
+
+        autor:nome,
+        texto:caixa.value.trim(),
+        hora:new Date().toLocaleTimeString([],{
+            hour:"2-digit",
+            minute:"2-digit"
+        })
+
+    });
+
+    caixa.value="";
+
+}
 socket.on("mensagem",(dados)=>{
 
     const hora=new Date().toLocaleTimeString([],{
