@@ -140,11 +140,6 @@ function enviar(){
 }
 socket.on("mensagem",(dados)=>{
 
-    const hora=new Date().toLocaleTimeString([],{
-        hour:"2-digit",
-        minute:"2-digit"
-    });
-
     const div=document.createElement("div");
 
     div.className="mensagem";
@@ -156,7 +151,7 @@ socket.on("mensagem",(dados)=>{
     texto.textContent=dados.texto;
 
     const horario=document.createElement("small");
-    horario.textContent=" "+hora;
+    horario.textContent=" "+(dados.hora || "");
 
     div.appendChild(autor);
     div.appendChild(texto);
@@ -166,31 +161,6 @@ socket.on("mensagem",(dados)=>{
     chat.appendChild(div);
 
     chat.scrollTop=chat.scrollHeight;
-
-});
-
-function enviar(){
-
-    if(caixa.value.trim()=="") return;
-
-    socket.emit("mensagem",{
-
-        autor:nome,
-        texto:caixa.value.trim()
-
-    });
-
-    caixa.value="";
-
-}
-
-caixa.addEventListener("keydown",(e)=>{
-
-    if(e.key==="Enter"){
-
-        enviar();
-
-    }
 
 });
 
